@@ -1,0 +1,26 @@
+Class exemplo;
+
+Int: numero;
+
+
+Int fatorial (Int fat){
+    if (fat > 1 && (!numero == 0 || numero ==)){
+        return fat * fatorial(fat - 1);
+    } else {
+        return 1;
+    }
+}
+// comentário
+
+Void resultado (Int valor){
+    Str: mensagem;
+    mensagem = "Resultado:" ;
+    print (mensagem, valor);
+    return;
+}    
+
+Main{
+    print ("Fatorial de N. Digite o número?");
+    read (numero);
+    resultado (fatorial(numero));
+}
