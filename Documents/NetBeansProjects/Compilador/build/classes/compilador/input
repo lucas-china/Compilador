@@ -4,7 +4,7 @@ Int: numero;
 
 
 Int fatorial (Int fat){
-    if (fat > 1 && (!numero == 0 || numero ==)){
+    if (fat > 1 && (!numero == 0 || numero == 1)){
         return fat * fatorial(fat - 1);
     } else {
         return 1;

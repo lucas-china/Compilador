@@ -19,6 +19,7 @@ valor: INT
      | STRING
      ;
 decFuncs: tipoRetorno ID '(' listaParam ')' '{' (decVars|decConsts)* comandos* retorno? '}' // Garantir que tenha retorno
+                                                                                            // O retorno pode estar no meio da função, arrumar isso.
         ;
 listaParam: (tipo ID (',' tipo ID)*)?
           ;
@@ -47,7 +48,7 @@ expre: ID /* Aqui tem que imprimir o valor associado ao ID, e não o ID -- Trata
      | valor
      | funcMath
      ;
-atribuicao: ID '=' expre 
+atribuicao: ID '=' expre  // Ver o apendice do livro, atribuição a = x > y || z > c;
           | ID '++'
           | ID '--'
           ;
