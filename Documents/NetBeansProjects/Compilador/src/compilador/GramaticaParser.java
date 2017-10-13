@@ -1,4 +1,5 @@
-// Generated from C:\Users\LuciaEmilia\Documents\NetBeansProjects\Compilador\src\compilador\Gramatica.g4 by ANTLR 4.5.3
+// Generated from /home/lucas_brito/Documents/Compiladores/Compiladores/Documents/NetBeansProjects/Compilador/src/compilador/Gramatica.g4 by ANTLR 4.5.3
+package compilador;
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.*;
