@@ -14,10 +14,11 @@ programa: 'Class' ID ';' (decVars|decConsts)* decFuncs* main
     ;
 decVars: tipo ':' listaIDs ';'
        ;
-tipo: 'Int'
-    | 'Str'
-    | 'Bool'
-    | 'Float'
+tipo returns[int t]
+    : 'Int'   {$t=1;}
+    | 'Str'   {$t=2;}
+    | 'Bool'  {$t=3;}
+    | 'Float' {$t=4;}
     ;
 listaIDs: ID (',' ID)*
         ;
@@ -97,8 +98,40 @@ incrementos:(atribuicao)(',' atribuicao)* // Aceitar incrementos maiores que 1? 
 Tk_Class: 'Class';
 Tk_Main: 'Main';
 Tk_PtVirg: ';';
-Tk_AbrePar: '{';
-Tk_FechPar: '}';
+Tk_Virg: ',';
+Tk_DoisPonts: ':';
+Tk_AbrePar: '(';
+Tk_FechPar: ')';
+Tk_Int: 'Int';
+Tk_Float: 'Float';
+Tk_Bool: 'Bool';
+Tk_Str: 'Str';
+Tk_Neg: '!';
+Tk_E: '&&';
+TK_OU: '||';
+Tk_MaiorQ: '>';
+Tk_MenorQ: '<';
+Tk_MaiorIgual: '>=';
+Tk_MenorIgual: '<=';
+Tk_Dif: '=!';
+Tk_Igual: '==';
+Tk_AbreChaves: '{';
+Tk_FechaChaves: '}';
+Tk_MULT: '*';
+Tk_DIV: '/';
+TK_SUB: '-';
+Tk_SOMA: '+';
+Tk_IF: 'if';
+Tk_FOR: 'for';
+Tk_ELSE: 'else';
+Tk_Incre: '++';
+Tk_Decre: '--';
+Tk_PRINT: 'print';
+Tk_READ: 'read';
+Tk_VOID: 'Void';
+Tk_RETURN: 'return';
+Tk_FINAL: 'final';
+Tk_Atribu: '=';
 
 ID: [A-Za-z][A-Za-z0-9]* ;
 INT: [0-9]+ ;

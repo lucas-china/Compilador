@@ -1,5 +1,6 @@
 // Generated from /home/lucas_brito/Documents/Compiladores/Compiladores/Documents/NetBeansProjects/Compilador/src/compilador/Gramatica.g4 by ANTLR 4.5.3
 package compilador;
+
   import java.util.HashMap;
   import java.util.Map;
 
