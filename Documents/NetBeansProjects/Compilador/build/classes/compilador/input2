@@ -1,0 +1,8 @@
+Class teste;
+
+Int: num;
+Str: msg;
+
+Main{
+
+}
