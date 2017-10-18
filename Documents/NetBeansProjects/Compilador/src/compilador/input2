@@ -2,7 +2,9 @@ Class teste;
 
 Int: num;
 Str: msg;
+Bool: teste;
 
 Main{
-
+    
+    teste = true;
 }

@@ -27,6 +27,8 @@ decConsts: 'final' tipo ID '=' valor ';'
 valor: INT
      | REAL
      | STRING
+     | TRUE
+     | FALSE
      ;
 decFuncs: tipoRetorno ID '(' listaParam ')' '{' (decVars|decConsts)* comandos* retorno? '}' // Garantir que tenha retorno
                                                                                             // O retorno pode estar no meio da função, arrumar isso.
@@ -58,37 +60,56 @@ expre: ID /* Aqui tem que imprimir o valor associado ao ID, e não o ID -- Trata
      | valor
      | funcMath
      ;
-atribuicao: ID '=' expre  // Ver o apendice do livro, atribuição a = x > y || z > c;
+atribuicao: ID '=' testeLogic  
           | ID '++'
           | ID '--'
           ;
+
+testeLogic: testeLogic '||' teste1
+           | teste1
+           ;
+
+teste1: teste1 '&&' teste2
+      | teste2
+      ;
+
+teste2: teste2 opSec teste3
+      | teste3
+      ;
+
+teste3:  teste3 opPrim funcMath
+      | funcMath
+      ;
+
+             
 funcMath: funcMath ('+'|'-') term 
         | term
         ;
 term: term ('*'|'/') fator
     | fator
     ;
-fator: '(' funcMath ')'
-     | '-'?(INT|REAL|ID|chamFuncs)
+
+unary: ('!'|'-')? fator
+     ;
+fator: '(' testeLogic ')'
+     | (INT|REAL|Tk_True|Tk_False|ID|chamFuncs)
      ;
 
 controle: 'if' '(' testeLogic ')' '{' comandos* retorno? '}' ('else' '{' comandos* retorno? '}')?
         | 'for' '(' varControl ';' testeLogic ';' incrementos ')' '{' comandos*/*|break  */ '}' 
         ;
-varControl: (ID | ID '=' INT)(',' (ID | ID '=' INT))*
+varControl: (ID '=' INT)(',' (ID '=' INT))*
           ;
-testeLogic: '!' testeLogic
-          | testeLogic ('&&'|'||') testeLogic
-          | '(' testeLogic ')'
-          | expre opLogic expre
-          ;
-opLogic: '=='
-       | '=!'
-       | '>='
-       | '<='
-       |'<'
-       |'>'
-       ;
+
+opSec: '>='
+     | '<='
+     |'<'
+     |'>'
+     ;
+opPrim: '=='
+      | '=!'
+      ;
+
 incrementos:(atribuicao)(',' atribuicao)* // Aceitar incrementos maiores que 1? (Teria que ser uma atribuição ex. a=a+2)
            ;
 
@@ -132,6 +153,8 @@ Tk_VOID: 'Void';
 Tk_RETURN: 'return';
 Tk_FINAL: 'final';
 Tk_Atribu: '=';
+Tk_True: 'true';
+Tk_False: 'false';
 
 ID: [A-Za-z][A-Za-z0-9]* ;
 INT: [0-9]+ ;

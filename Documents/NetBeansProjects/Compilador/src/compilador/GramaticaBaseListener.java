@@ -236,6 +236,54 @@ public class GramaticaBaseListener implements GramaticaListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterTesteLogic(GramaticaParser.TesteLogicContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitTesteLogic(GramaticaParser.TesteLogicContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterTeste1(GramaticaParser.Teste1Context ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitTeste1(GramaticaParser.Teste1Context ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterTeste2(GramaticaParser.Teste2Context ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitTeste2(GramaticaParser.Teste2Context ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterTeste3(GramaticaParser.Teste3Context ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitTeste3(GramaticaParser.Teste3Context ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterFuncMath(GramaticaParser.FuncMathContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -255,6 +303,18 @@ public class GramaticaBaseListener implements GramaticaListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitTerm(GramaticaParser.TermContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterUnary(GramaticaParser.UnaryContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitUnary(GramaticaParser.UnaryContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -296,25 +356,25 @@ public class GramaticaBaseListener implements GramaticaListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterTesteLogic(GramaticaParser.TesteLogicContext ctx) { }
+	@Override public void enterOpSec(GramaticaParser.OpSecContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitTesteLogic(GramaticaParser.TesteLogicContext ctx) { }
+	@Override public void exitOpSec(GramaticaParser.OpSecContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterOpLogic(GramaticaParser.OpLogicContext ctx) { }
+	@Override public void enterOpPrim(GramaticaParser.OpPrimContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitOpLogic(GramaticaParser.OpLogicContext ctx) { }
+	@Override public void exitOpPrim(GramaticaParser.OpPrimContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
