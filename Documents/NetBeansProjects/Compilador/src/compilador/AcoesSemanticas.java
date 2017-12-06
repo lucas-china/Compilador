@@ -25,6 +25,7 @@ public class AcoesSemanticas extends GramaticaBaseListener {
     public List<String> erros = new ArrayList<String>();
     
     
+    
     @Override
     public void enterDecVars(GramaticaParser.DecVarsContext ctx) {
         
@@ -88,6 +89,7 @@ public class AcoesSemanticas extends GramaticaBaseListener {
     
     @Override 
     public void enterDecFuncs(GramaticaParser.DecFuncsContext ctx) {
+        int tipo;
         
         TerminalNode id = ctx.ID();
         if(!tabSimb.containsKey(id.getText())){
@@ -105,8 +107,65 @@ public class AcoesSemanticas extends GramaticaBaseListener {
             else {
                 if(ctx.retorno() != null){
                     // ta certo, a função tem um tipo, ela precisa de um retorno
-                    tabSimb.put(id.getText(), ctx.tipoRetorno().tipo().t); 
-                    tabFunc.put(id.getText(), ctx.tipoRetorno().tipo().t);
+                    if(ctx.retorno().expre().ID() != null){
+                       tipo = tabSimb.get(ctx.retorno().expre().ID().getText());
+                       if(tipo == ctx.tipoRetorno().tipo().t){
+                           tabSimb.put(id.getText(), ctx.tipoRetorno().tipo().t); 
+                            tabFunc.put(id.getText(), ctx.tipoRetorno().tipo().t);
+                       }
+                       else{
+                           erros.add("Na linha " + ctx.getStart().getLine() + " o retorno da função não é igual ao tipo da função");
+                       }
+                    }
+                    else if(ctx.retorno().expre().valor() != null){
+                        tipo = ctx.tipoRetorno().tipo().t;
+                        switch (tipo){
+                            case 1: if(ctx.retorno().expre().valor().INT() != null){ 
+                                        tabSimb.put(id.getText(), tipo);
+                                        tabFunc.put(id.getText(),tipo);
+                                    } 
+                                    else { 
+                                        erros.add("O tipo de retorno não é igual ao tipo da função na linha " + ctx.getStart().getLine());
+                                    }
+                                    break;
+                            case 2: if(ctx.retorno().expre().valor().STRING() != null){ 
+                                        tabSimb.put(id.getText(), tipo);
+                                        tabFunc.put(id.getText(),tipo);
+                                    } 
+                                    else { 
+                                        erros.add("O tipo de retorno não é igual ao tipo da função na linha " + ctx.getStart().getLine());
+                                    }
+                                    break;
+                            case 3: if(ctx.retorno().expre().valor().TRUE() != null || ctx.retorno().expre().valor().FALSE() != null){ 
+                                        tabSimb.put(id.getText(), tipo);
+                                        tabFunc.put(id.getText(),tipo);
+                                    } 
+                                    else { 
+                                        erros.add("O tipo de retorno não é igual ao tipo da função na linha " + ctx.getStart().getLine());
+                                    }
+                                    break;
+                            case 4: if(ctx.retorno().expre().valor().REAL() != null){ 
+                                        tabSimb.put(id.getText(), tipo);
+                                        tabFunc.put(id.getText(),tipo);
+                                    } 
+                                    else { 
+                                        erros.add("O tipo de retorno não é igual ao tipo da função na linha " + ctx.getStart().getLine());
+                                    }
+                                    break;
+                            default: erros.add("O tipo de retorno não é igual ao tipo da função na linha " + ctx.getStart().getLine());
+                        }
+                    }
+                    else{
+                        int tip = funcMath(ctx.retorno().expre().funcMath());
+                        tipo = ctx.tipoRetorno().tipo().t;
+                        if(tipo == tip){
+                            tabSimb.put(id.getText(), tipo);
+                            tabFunc.put(id.getText(),tipo);
+                        }
+                        else{
+                            erros.add("O tipo de retorno não é igual ao tipo da função na linha " + ctx.getStart().getLine());
+                        }
+                    }                   
                     
                 }
                 else {
@@ -115,6 +174,7 @@ public class AcoesSemanticas extends GramaticaBaseListener {
             }
         }
         else erros.add("Na linha " + ctx.getStart().getLine() + " ID já usado!");
+        
     }
     
     @Override 
@@ -505,8 +565,12 @@ public class AcoesSemanticas extends GramaticaBaseListener {
                                 tipo = 2;
                             }
                             else{
-                                if(ctx.chamFuncs() != null)
-                                   tipo = tabFunc.get(ctx.chamFuncs().ID().getText());
+                                if(ctx.chamFuncs() != null){
+                                //System.out.println(ctx.chamFuncs().ID().getText());
+                                try{
+                                    tipo = tabFunc.get(ctx.chamFuncs().ID().getText());
+                                }catch (Exception e){}                                
+                                }
                             }
                         }
                     }

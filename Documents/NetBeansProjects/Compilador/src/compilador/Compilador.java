@@ -49,6 +49,9 @@ public class Compilador {
         System.out.println("\nTabela de Constantes");
         System.out.println(listener.tabCons);
         
+        System.out.println("\nTabela de Funções");
+        System.out.println(listener.tabFunc);
+        
         System.out.println("\nERROS: ");
         for(String erro : listener.erros){
             System.out.println(erro);
