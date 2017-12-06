@@ -32,6 +32,16 @@ public interface GramaticaListener extends ParseTreeListener {
 	 */
 	void exitDecVars(GramaticaParser.DecVarsContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link GramaticaParser#decVarsFunc}.
+	 * @param ctx the parse tree
+	 */
+	void enterDecVarsFunc(GramaticaParser.DecVarsFuncContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link GramaticaParser#decVarsFunc}.
+	 * @param ctx the parse tree
+	 */
+	void exitDecVarsFunc(GramaticaParser.DecVarsFuncContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link GramaticaParser#tipo}.
 	 * @param ctx the parse tree
 	 */
@@ -52,6 +62,16 @@ public interface GramaticaListener extends ParseTreeListener {
 	 */
 	void exitListaIDs(GramaticaParser.ListaIDsContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link GramaticaParser#listaIDs2}.
+	 * @param ctx the parse tree
+	 */
+	void enterListaIDs2(GramaticaParser.ListaIDs2Context ctx);
+	/**
+	 * Exit a parse tree produced by {@link GramaticaParser#listaIDs2}.
+	 * @param ctx the parse tree
+	 */
+	void exitListaIDs2(GramaticaParser.ListaIDs2Context ctx);
+	/**
 	 * Enter a parse tree produced by {@link GramaticaParser#decConsts}.
 	 * @param ctx the parse tree
 	 */
@@ -61,6 +81,16 @@ public interface GramaticaListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitDecConsts(GramaticaParser.DecConstsContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link GramaticaParser#decConstsFunc}.
+	 * @param ctx the parse tree
+	 */
+	void enterDecConstsFunc(GramaticaParser.DecConstsFuncContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link GramaticaParser#decConstsFunc}.
+	 * @param ctx the parse tree
+	 */
+	void exitDecConstsFunc(GramaticaParser.DecConstsFuncContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link GramaticaParser#valor}.
 	 * @param ctx the parse tree

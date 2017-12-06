@@ -12,7 +12,10 @@ grammar Gramatica;
 
 programa: 'Class' ID ';' (decVars|decConsts)* decFuncs* main 
     ;
-decVars: tipo ':' listaIDs ';'
+decVars: tipo ':' listaIDs[$tipo.t] ';'
+       ;
+
+decVarsFunc: tipo ':' listaIDs[$tipo.t] ';'
        ;
 tipo returns[int t]
     : 'Int'   {$t=1;}
@@ -20,18 +23,21 @@ tipo returns[int t]
     | 'Bool'  {$t=3;}
     | 'Float' {$t=4;}
     ;
-listaIDs: ID (',' ID)*
+listaIDs [int t]: ID (',' ID)*
         ;
+listaIDs2: ID (',' ID)*
+         ;
 decConsts: 'final' tipo ID '=' valor ';'
          ;
-valor: INT
+decConstsFunc: 'final' tipo ID '=' valor ';'
+         ;
+valor: INT 
      | REAL
      | STRING
      | TRUE
      | FALSE
      ;
-decFuncs: tipoRetorno ID '(' listaParam ')' '{' (decVars|decConsts)* comandos* retorno? '}' // Garantir que tenha retorno
-                                                                                            // O retorno pode estar no meio da função, arrumar isso.
+decFuncs: tipoRetorno ID '(' listaParam ')' '{' (decVarsFunc|decConstsFunc)* comandos* retorno? '}' // Mudar a declaração de variaveis e constantes para outro nome.
         ;
 listaParam: (tipo ID (',' tipo ID)*)?
           ;
@@ -47,15 +53,19 @@ comandos: print ';'
         | chamFuncs ';'
         | atribuicao ';' /* =,++, -- */
         | controle /* ifelse, for */
+        | Tk_break ';'   
         ;
 print: 'print' '(' listaExpre? ')'
      ;
-read: 'read' '(' listaIDs ')'
+read: 'read' '(' listaIDs2 ')'
     ;
 chamFuncs: ID '(' (listaExpre)? ')'
          ;
 listaExpre: expre(',' expre)*
           ;
+
+// Mudar, fazer como do livro.
+
 expre: ID /* Aqui tem que imprimir o valor associado ao ID, e não o ID -- Tratar se for Null*/
      | valor
      | funcMath
@@ -65,38 +75,44 @@ atribuicao: ID '=' testeLogic
           | ID '--'
           ;
 
-testeLogic: testeLogic '||' teste1
-           | teste1
+testeLogic returns[int t]: testeLogic '||' a=teste1 {$t = $a.t;}
+           | a=teste1 {$t = $a.t;}
            ;
 
-teste1: teste1 '&&' teste2
-      | teste2
+teste1 returns[int t]: teste1 '&&' a=teste2 {$t = $a.t;}
+      | a=teste2 {$t = $a.t;}
       ;
 
-teste2: teste2 opSec teste3
-      | teste3
+teste2 returns[int t]: teste2 opSec a=teste3 {$t = $a.t;}
+      | a=teste3 {$t = $a.t;}
       ;
 
-teste3:  teste3 opPrim funcMath
-      | funcMath
+teste3 returns[int t]:  teste3 opPrim a=funcMath {$t = $a.t;}
+      | a=funcMath {$t = $a.t;}
       ;
 
              
-funcMath: funcMath ('+'|'-') term 
-        | term
+funcMath returns[int t]: funcMath ('+'|'-') a=term {$t = $a.t;} 
+        | a=term {$t = $a.t;}
         ;
-term: term ('*'|'/') fator
-    | fator
+term returns[int t]: term ('*'|'/') a=fator {$t = $a.t;}
+    | a=fator {$t = $a.t;}
     ;
 
-unary: ('!'|'-')? fator
+unary returns[int t]: ('!'|'-')? a=fator {$t = $a.t;}
      ;
-fator: '(' testeLogic ')'
-     | (INT|REAL|Tk_True|Tk_False|ID|chamFuncs)
+fator returns[int t]: '(' testeLogic ')'  
+    | INT {$t = 1;}
+    | REAL {$t = 4;}
+    | Tk_True {$t = 3;}
+    | Tk_False {$t = 3;}
+    | ID {$t = 5;}
+    | STRING {$t = 2;}
+    | chamFuncs  // Atribuição de String
      ;
 
 controle: 'if' '(' testeLogic ')' '{' comandos* retorno? '}' ('else' '{' comandos* retorno? '}')?
-        | 'for' '(' varControl ';' testeLogic ';' incrementos ')' '{' comandos*/*|break  */ '}' 
+        | 'for' '(' varControl? ';' testeLogic ';' incrementos? ')' '{' comandos* '}' 
         ;
 varControl: (ID '=' INT)(',' (ID '=' INT))*
           ;
@@ -107,15 +123,15 @@ opSec: '>='
      |'>'
      ;
 opPrim: '=='
-      | '=!'
+      | '!='
       ;
 
-incrementos:(atribuicao)(',' atribuicao)* // Aceitar incrementos maiores que 1? (Teria que ser uma atribuição ex. a=a+2)
+incrementos:(atribuicao)(',' atribuicao)* 
            ;
 
 
                                   
-                              
+Tk_break: 'break';
 Tk_Class: 'Class';
 Tk_Main: 'Main';
 Tk_PtVirg: ';';

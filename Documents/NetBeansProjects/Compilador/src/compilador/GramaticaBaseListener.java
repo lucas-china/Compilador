@@ -44,6 +44,18 @@ public class GramaticaBaseListener implements GramaticaListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterDecVarsFunc(GramaticaParser.DecVarsFuncContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitDecVarsFunc(GramaticaParser.DecVarsFuncContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterTipo(GramaticaParser.TipoContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -68,6 +80,18 @@ public class GramaticaBaseListener implements GramaticaListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterListaIDs2(GramaticaParser.ListaIDs2Context ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitListaIDs2(GramaticaParser.ListaIDs2Context ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterDecConsts(GramaticaParser.DecConstsContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -75,6 +99,18 @@ public class GramaticaBaseListener implements GramaticaListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitDecConsts(GramaticaParser.DecConstsContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterDecConstsFunc(GramaticaParser.DecConstsFuncContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitDecConstsFunc(GramaticaParser.DecConstsFuncContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
