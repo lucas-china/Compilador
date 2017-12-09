@@ -7,14 +7,24 @@ Bool: k,f;
 final Int z = 10;
 
 Float teste(){
+    print(true + 9);
     return num;
 }
 
 Main{
     
-    if(x>y){}
+    x = 90;
+
+    
+
     for(x=0,y=0;x<10;x++){} 
+    
+    if(x>y){}
+    
     num = teste();
+    read(j);
+    print(x);
+    
    
     
     
