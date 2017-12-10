@@ -16,10 +16,17 @@ import org.antlr.v4.runtime.Recognizer;
  * @author LuciaEmilia
  */
 public class ErrorCatcher extends ConsoleErrorListener {
+    
+    private AcoesSemanticas as;
 
     @Override
     public void syntaxError(Recognizer<?, ?> rcgnzr, Object o, int i, int i1, String string, RecognitionException re) {
-        throw new UnsupportedOperationException("\nErro na linha " + i + ", no caractere da posição " + i1 + "."); //To change body of generated methods, choose Tools | Templates.
+        String erro = new String("Linha " + i + ": Erro sintatico na posição " + i1 + " <" + string+">.");
+        as.erros.add(erro);
+    }
+    
+    public ErrorCatcher(AcoesSemanticas as){
+        this.as = as;
     }
     
 }
