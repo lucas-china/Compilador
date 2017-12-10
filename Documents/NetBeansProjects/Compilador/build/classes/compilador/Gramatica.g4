@@ -4,11 +4,14 @@ grammar Gramatica;
 @header{
   import java.util.HashMap;
   import java.util.Map;
+  
 }
 
 @parser::members{
-//   Map <String,Integer> tabSimb = new HashMap<String,Integer>();                 
+//   Map <String,Integer> tabSimb = new HashMap<String,Integer>();   
+  
 }
+
 
 programa: 'Class' ID ';' (decVars|decConsts)* decFuncs* main 
     ;
@@ -128,7 +131,6 @@ opPrim: '=='
 
 incrementos:(atribuicao)(',' atribuicao)* 
            ;
-
 
                                   
 Tk_break: 'break';

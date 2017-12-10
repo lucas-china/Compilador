@@ -12,9 +12,13 @@ import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
+import org.antlr.v4.runtime.ANTLRErrorListener;
+
 
 
 import org.antlr.v4.runtime.CharStream;
+import org.antlr.v4.runtime.ConsoleErrorListener;
+import org.antlr.v4.runtime.RecognitionException;
 /**
  *
  * @author LuciaEmilia and Lucas Brito
@@ -32,15 +36,18 @@ public class Compilador {
 //        ANTLRInputStream stream = new ANTLRInputStream(input);
          ANTLRInputStream stream = new ANTLRInputStream(caminho);
         
-        
+       
         //Lexico
         GramaticaLexer lexer = new GramaticaLexer((CharStream) stream);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         
         //Sintatico
         GramaticaParser parser = new GramaticaParser(tokens);
+        ConsoleErrorListener listener_ = new ErrorCatcher();
+        parser.addErrorListener(listener_);
         ParseTree tree = parser.programa();
         System.out.println(tree.toStringTree(parser));
+        
         
         //acoes semanticas, atraves de listener
         AcoesSemanticas listener = new AcoesSemanticas();

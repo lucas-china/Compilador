@@ -22,7 +22,6 @@ Main{
     if(x>y){}
     
     num = teste();
-    read(j);
     print(x);
     
    

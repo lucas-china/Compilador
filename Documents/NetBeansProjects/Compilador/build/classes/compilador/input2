@@ -2,27 +2,27 @@ Class triangulo;
 Int: x,y,z,a;
 Str: s;
 Main{
-	for(a=0;TRUE;a++){
-		read(x,y,z);
-		if(x+y>z && x+z>y && y+z>x){
-			print("forma triangulo");
-			if(x==y && y==z){
-				print("triangulo equilatero");
-			} else {
-				if(x==y || y==z || x == z){
-					print("triangulo isoceles");
-				} else {
-					print("triangulo escaleno");
-				}
-			}
-		} else {
-			print("valores nao formam um triangulo");
-		}
-		print("Tentar novamente?");
-		read(s);
-		if(s!=0){
-			break;
-		}
-	}
-	print("Tchau!");
+    for(a=0;TRUE;a++){
+        read(x,y,z);
+        if(x+y>z && x+z>y && y+z>x){
+            print("forma triangulo");
+            if(x==y && y==z){
+                    print("triangulo equilatero");
+            } else {
+                if(x==y || y==z || x == z){
+                        print("triangulo isoceles");
+                } else {
+                        print("triangulo escaleno");
+                }
+            }
+        } else {
+            print("valores nao formam um triangulo");
+        }
+        print("Tentar novamente?");
+        read(s);
+        if(s!=0){
+            break;
+        }
+    }
+    print("Tchau!");
 }
