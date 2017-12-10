@@ -68,7 +68,7 @@ listaExpre: expre(',' expre)*
 
 expre: ID /* Aqui tem que imprimir o valor associado ao ID, e não o ID -- Tratar se for Null*/
      | valor
-     | funcMath
+     | testeLogic // mudar isso aqui
      ;
 atribuicao: ID '=' testeLogic  
           | ID '++'
@@ -108,7 +108,7 @@ fator returns[int t]: '(' testeLogic ')'
     | Tk_False {$t = 3;}
     | ID {$t = 5;}
     | STRING {$t = 2;}
-    | chamFuncs  // Atribuição de String
+    | chamFuncs  
      ;
 
 controle: 'if' '(' testeLogic ')' '{' comandos* retorno? '}' ('else' '{' comandos* retorno? '}')?

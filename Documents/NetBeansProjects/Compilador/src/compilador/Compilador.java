@@ -56,6 +56,8 @@ public class Compilador {
         System.out.println("\nTabela de Funções");
         System.out.println(listener.tabFunc);
         
+        System.out.println(listener.paramFunc);
+        
         if (listener.erros.isEmpty()){
             return "Compilado com sucesso!";   
         }

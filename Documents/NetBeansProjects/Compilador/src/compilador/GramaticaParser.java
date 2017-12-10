@@ -1357,8 +1357,8 @@ public class GramaticaParser extends Parser {
 		public ValorContext valor() {
 			return getRuleContext(ValorContext.class,0);
 		}
-		public FuncMathContext funcMath() {
-			return getRuleContext(FuncMathContext.class,0);
+		public TesteLogicContext testeLogic() {
+			return getRuleContext(TesteLogicContext.class,0);
 		}
 		public ExpreContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -1399,7 +1399,7 @@ public class GramaticaParser extends Parser {
 				enterOuterAlt(_localctx, 3);
 				{
 				setState(241);
-				funcMath(0);
+				testeLogic(0);
 				}
 				break;
 			}
@@ -2720,8 +2720,8 @@ public class GramaticaParser extends Parser {
 		"\u00e7\3\2\2\2\u00e7\u00e8\7\13\2\2\u00e8%\3\2\2\2\u00e9\u00ee\5(\25\2"+
 		"\u00ea\u00eb\7\b\2\2\u00eb\u00ed\5(\25\2\u00ec\u00ea\3\2\2\2\u00ed\u00f0"+
 		"\3\2\2\2\u00ee\u00ec\3\2\2\2\u00ee\u00ef\3\2\2\2\u00ef\'\3\2\2\2\u00f0"+
-		"\u00ee\3\2\2\2\u00f1\u00f5\7,\2\2\u00f2\u00f5\5\22\n\2\u00f3\u00f5\5\64"+
-		"\33\2\u00f4\u00f1\3\2\2\2\u00f4\u00f2\3\2\2\2\u00f4\u00f3\3\2\2\2\u00f5"+
+		"\u00ee\3\2\2\2\u00f1\u00f5\7,\2\2\u00f2\u00f5\5\22\n\2\u00f3\u00f5\5,"+
+		"\27\2\u00f4\u00f1\3\2\2\2\u00f4\u00f2\3\2\2\2\u00f4\u00f3\3\2\2\2\u00f5"+
 		")\3\2\2\2\u00f6\u00f7\7,\2\2\u00f7\u00f8\7)\2\2\u00f8\u00fe\5,\27\2\u00f9"+
 		"\u00fa\7,\2\2\u00fa\u00fe\7\"\2\2\u00fb\u00fc\7,\2\2\u00fc\u00fe\7#\2"+
 		"\2\u00fd\u00f6\3\2\2\2\u00fd\u00f9\3\2\2\2\u00fd\u00fb\3\2\2\2\u00fe+"+

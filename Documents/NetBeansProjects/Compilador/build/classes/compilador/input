@@ -6,7 +6,7 @@ Str: msg;
 Bool: k,f;
 final Int z = 10;
 
-Float teste(){
+Float teste(Float n, Int x, Bool k){
     print(true + 9);
     return num;
 }
@@ -21,7 +21,7 @@ Main{
     
     if(x>y){}
     
-    num = teste();
+    num = teste(num,x,k);
     read(j);
     print(x);
     

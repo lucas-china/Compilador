@@ -27,6 +27,7 @@ public class AcoesSemanticas extends GramaticaBaseListener {
     public Map<String, Integer> tabFunc = Tabela.getTabFunc();
     public List<String> erros = new ArrayList<String>();
     public Map<String, Boolean> VarInstan = new HashMap<String, Boolean>();
+    public Map<String, List<Integer>> paramFunc = new HashMap<String, List<Integer>>();
     
     
     
@@ -38,7 +39,7 @@ public class AcoesSemanticas extends GramaticaBaseListener {
                 if (!tabSimb.containsKey(id.getText())){
                     for(String palavra : keywords){
                         if(palavra == id.getText()){
-                            erros.add("Linha "+ctx.getStart().getLine()+": Palavra reservada" );
+                            erros.add("Linha "+ctx.getStart().getLine()+": Palavra reservada." );
                             flag = 1;
                         }
                     }                    
@@ -49,7 +50,7 @@ public class AcoesSemanticas extends GramaticaBaseListener {
                     }
                     flag = 0;    
                 } 
-                else erros.add("Linha "+ctx.getStart().getLine()+": ID duplicado" );
+                else erros.add("Linha "+ctx.getStart().getLine()+": ID duplicado." );
             }
     }
     @Override 
@@ -94,7 +95,8 @@ public class AcoesSemanticas extends GramaticaBaseListener {
     
     @Override 
     public void enterDecFuncs(GramaticaParser.DecFuncsContext ctx) {
-        int tipo;
+        int tipo = 0;
+        List<Integer> listaParam = new ArrayList<Integer>();
         
         TerminalNode id = ctx.ID();
         if(!tabSimb.containsKey(id.getText())){
@@ -106,6 +108,8 @@ public class AcoesSemanticas extends GramaticaBaseListener {
                     
                 }
                 else {
+                    tabSimb.put(id.getText(), ctx.tipoRetorno().tipo().t); 
+                    tabFunc.put(id.getText(), ctx.tipoRetorno().tipo().t);
                     erros.add("Linha "+ctx.getStart().getLine()+": Erro de tipo. Retorno invalido");
                 }
             }
@@ -161,7 +165,7 @@ public class AcoesSemanticas extends GramaticaBaseListener {
                         }
                     }
                     else{
-                        int tip = funcMath(ctx.retorno().expre().funcMath());
+                        int tip = testeLogicoOU(ctx.retorno().expre().testeLogic());
                         tipo = ctx.tipoRetorno().tipo().t;
                         if(tipo == tip){
                             tabSimb.put(id.getText(), tipo);
@@ -177,6 +181,16 @@ public class AcoesSemanticas extends GramaticaBaseListener {
                     erros.add("Linha "+ctx.getStart().getLine()+": Esperando retorno da funcao");
                 }                
             }
+            
+            if(ctx.listaParam() == null){
+                paramFunc.put(ctx.ID().getText(), listaParam);
+            }
+            else{
+                for(GramaticaParser.TipoContext tip : ctx.listaParam().tipo()){
+                    listaParam.add(tip.t);
+                }
+                paramFunc.put(ctx.ID().getText(), listaParam);
+            }
         }
         else  erros.add("Linha "+ctx.getStart().getLine()+": ID duplicado");
 
@@ -185,6 +199,8 @@ public class AcoesSemanticas extends GramaticaBaseListener {
     
     @Override 
     public void enterChamFuncs(GramaticaParser.ChamFuncsContext ctx) { 
+        List<Integer> listaParam = new ArrayList<Integer>();
+        int i, tipo, tip;
         
         TerminalNode id = ctx.ID();
         if(!tabFunc.containsKey(id.getText())){
@@ -192,7 +208,61 @@ public class AcoesSemanticas extends GramaticaBaseListener {
         }
         else {
             if(ctx.listaExpre() != null){
-                //System.out.println("Existe parametros");
+                listaParam = paramFunc.get(ctx.ID().getText());
+                i=0;
+                for(GramaticaParser.ExpreContext exp: ctx.listaExpre().expre()){
+                    if(exp.ID() != null){
+                        if(tabSimb.containsKey(exp.ID().getText())){
+                            tipo = tabSimb.get(exp.ID().getText());
+                            tip = listaParam.get(i);
+                            if(tipo == tip){
+                                
+                            }
+                            else{
+                                erros.add("Linha: " + ctx.getStart().getLine() + " variável de um tipo diferente da esperada na chamada da função " + exp.ID().getText() + " no parametro " + (i+1));
+                            }
+                        }
+                        else{
+                            erros.add("Linha: " + ctx.getStart().getLine() + " variável não declarada.");
+                        }
+                    }
+                    else if(exp.valor() != null){
+                        if(exp.valor().INT() != null){
+                            tip = listaParam.get(i);
+                            if(tip != 1){ // Arrumar !! 
+                                try{
+                                    erros.add("Linha: " + ctx.getStart().getLine() + " variável de um tipo diferente da esperada na chamada da função " + exp.ID().getText() + " no parametro " + (i+1));
+                                }catch(Exception e){}                                
+                            }
+                        }
+                        else if(exp.valor().STRING() != null){
+                            tip = listaParam.get(i);
+                            if(tip != 2){
+                               erros.add("Linha: " + ctx.getStart().getLine() + " variável de um tipo diferente da esperada na chamada da função " + exp.ID().getText() + " no parametro " + (i+1)); 
+                            }                        
+                        }
+                        else if(exp.valor().TRUE() != null || exp.valor().FALSE() != null){
+                            tip = listaParam.get(i);
+                            if(tip != 3){
+                               erros.add("Linha: " + ctx.getStart().getLine() + " variável de um tipo diferente da esperada na chamada da função " + exp.ID().getText() + " no parametro " + (i+1)); 
+                            }                        
+                        }
+                        else if(exp.valor().REAL() != null){
+                            tip = listaParam.get(i);
+                            if(tip != 4){
+                               erros.add("Linha: " + ctx.getStart().getLine() + " variável de um tipo diferente da esperada na chamada da função " + exp.ID().getText() + " no parametro " + (i+1)); 
+                            }                        
+                        }
+                    }
+                    else if(exp.testeLogic() != null){
+                        tip = testeLogicoOU(exp.testeLogic());
+                        tipo = listaParam.get(i);
+                        if(tip != tipo){
+                            erros.add("Linha: " + ctx.getStart().getLine() + " variável de um tipo diferente da esperada na chamada da função " + exp.ID().getText() + " no parametro " + (i+1)); 
+                        }
+                    }
+                    i++;
+                }
             }
             else{
                 //System.out.println("Sem parametros");
@@ -687,8 +757,8 @@ public class AcoesSemanticas extends GramaticaBaseListener {
                         erros.add("Linha "+ctx.getStart().getLine()+": Variavel "+exp.ID().getText()+" nao declarada");
                     }
                 }
-                else if(exp.funcMath() != null){
-                    int tipo = funcMath(exp.funcMath());
+                else if(exp.testeLogic() != null){
+                    int tipo = testeLogicoOU(exp.testeLogic());
                     if(tipo != 1 && tipo!=2 && tipo!=3 && tipo != 4){
                         erros.add("Linha "+ctx.getStart().getLine()+": Expressao invalida");
                     }
