@@ -38,7 +38,7 @@ public class AcoesSemanticas extends GramaticaBaseListener {
                 if (!tabSimb.containsKey(id.getText())){
                     for(String palavra : keywords){
                         if(palavra == id.getText()){
-                            erros.add("Não pode usar palavra reservada como ID  na linha " + ctx.getStart().getLine());
+                            erros.add("Linha "+ctx.getStart().getLine()+": Palavra reservada" );
                             flag = 1;
                         }
                     }                    
@@ -49,7 +49,7 @@ public class AcoesSemanticas extends GramaticaBaseListener {
                     }
                     flag = 0;    
                 } 
-                else erros.add("ID duplicado (Variavel) na linha " + ctx.getStart().getLine());
+                else erros.add("Linha "+ctx.getStart().getLine()+": ID duplicado" );
             }
     }
     @Override 
@@ -66,28 +66,28 @@ public class AcoesSemanticas extends GramaticaBaseListener {
                             tabSimb.put(id.getText(), tip);
                             tabCons.put(id.getText(), ctx.tipo().getText());} 
                         else { 
-                            erros.add("Tipo da constante invalido com a atribuição na linha " + ctx.getStart().getLine());
+                            erros.add("Linha "+ctx.getStart().getLine()+": Constante "+ctx.getText()+" com tipo inválido ");
                         } 
                         break;
                 case 2: if(ctx.valor().STRING() != null){ 
                             tabSimb.put(id.getText(), tip); 
                             tabCons.put(id.getText(), ctx.tipo().getText());} 
-                        else { erros.add("Tipo da constante invalido com a atribuição na linha " + ctx.getStart().getLine());} 
+                        else { erros.add("Linha "+ctx.getStart().getLine()+": Constante "+ctx.getText()+" com tipo inválido ");} 
                         break;
                 case 3: if(ctx.valor().TRUE() != null || ctx.valor().FALSE() != null){ 
                             tabSimb.put(id.getText(), tip); 
                             tabCons.put(id.getText(), ctx.tipo().getText());} 
-                        else { erros.add("Tipo da constante invalido com a atribuição na linha " + ctx.getStart().getLine());} 
+                        else { erros.add("Linha "+ctx.getStart().getLine()+": Constante "+ctx.getText()+" com tipo inválido ");} 
                         break;
                 case 4: if(ctx.valor().REAL() != null){ 
                             tabSimb.put(id.getText(), tip); 
                             tabCons.put(id.getText(), ctx.tipo().getText());}
-                        else { erros.add("Tipo da constante invalido com a atribuição na linha " + ctx.getStart().getLine());} 
+                        else { erros.add("Linha "+ctx.getStart().getLine()+": Constante "+ctx.getText()+" com tipo inválido ");} 
                         break;
             }
             
         }
-         else erros.add("Na linha " + ctx.getStart().getLine() + " ID duplicado");
+         else erros.add("Linha "+ctx.getStart().getLine()+": ID duplicado");
     }
     
     
@@ -106,7 +106,7 @@ public class AcoesSemanticas extends GramaticaBaseListener {
                     
                 }
                 else {
-                    erros.add("Na liha " + ctx.getStart().getLine() + " o tipo void não aceita returno");
+                    erros.add("Linha "+ctx.getStart().getLine()+": Erro de tipo. Retorno invalido");
                 }
             }
             else {
@@ -119,7 +119,7 @@ public class AcoesSemanticas extends GramaticaBaseListener {
                             tabFunc.put(id.getText(), ctx.tipoRetorno().tipo().t);
                        }
                        else{
-                           erros.add("Na linha " + ctx.getStart().getLine() + " o retorno da função não é igual ao tipo da função");
+                           erros.add("Linha "+ctx.getStart().getLine()+": Erro de tipo. Retorno invalido");
                        }
                     }
                     else if(ctx.retorno().expre().valor() != null){
@@ -130,7 +130,7 @@ public class AcoesSemanticas extends GramaticaBaseListener {
                                         tabFunc.put(id.getText(),tipo);
                                     } 
                                     else { 
-                                        erros.add("O tipo de retorno não é igual ao tipo da função na linha " + ctx.getStart().getLine());
+                                        erros.add("Linha "+ctx.getStart().getLine()+": Erro de tipo. Retorno invalido");
                                     }
                                     break;
                             case 2: if(ctx.retorno().expre().valor().STRING() != null){ 
@@ -138,7 +138,7 @@ public class AcoesSemanticas extends GramaticaBaseListener {
                                         tabFunc.put(id.getText(),tipo);
                                     } 
                                     else { 
-                                        erros.add("O tipo de retorno não é igual ao tipo da função na linha " + ctx.getStart().getLine());
+                                        erros.add("Linha "+ctx.getStart().getLine()+": Erro de tipo. Retorno invalido");
                                     }
                                     break;
                             case 3: if(ctx.retorno().expre().valor().TRUE() != null || ctx.retorno().expre().valor().FALSE() != null){ 
@@ -146,7 +146,7 @@ public class AcoesSemanticas extends GramaticaBaseListener {
                                         tabFunc.put(id.getText(),tipo);
                                     } 
                                     else { 
-                                        erros.add("O tipo de retorno não é igual ao tipo da função na linha " + ctx.getStart().getLine());
+                                        erros.add("Linha "+ctx.getStart().getLine()+": Erro de tipo. Retorno invalido");
                                     }
                                     break;
                             case 4: if(ctx.retorno().expre().valor().REAL() != null){ 
@@ -154,10 +154,10 @@ public class AcoesSemanticas extends GramaticaBaseListener {
                                         tabFunc.put(id.getText(),tipo);
                                     } 
                                     else { 
-                                        erros.add("O tipo de retorno não é igual ao tipo da função na linha " + ctx.getStart().getLine());
+                                        erros.add("Linha "+ctx.getStart().getLine()+": Erro de tipo. Retorno invalido");
                                     }
                                     break;
-                            default: erros.add("O tipo de retorno não é igual ao tipo da função na linha " + ctx.getStart().getLine());
+                            default: erros.add("Linha "+ctx.getStart().getLine()+": Erro de tipo. Retorno invalido");
                         }
                     }
                     else{
@@ -168,17 +168,18 @@ public class AcoesSemanticas extends GramaticaBaseListener {
                             tabFunc.put(id.getText(),tipo);
                         }
                         else{
-                            erros.add("O tipo de retorno não é igual ao tipo da função na linha " + ctx.getStart().getLine());
+                            erros.add("Linha "+ctx.getStart().getLine()+": Erro de tipo. Retorno invalido");
                         }
                     }                   
                     
                 }
                 else {
-                    erros.add("Na linha " + ctx.getStart().getLine() + " a função precisa retornar alguma coisa");
+                    erros.add("Linha "+ctx.getStart().getLine()+": Esperando retorno da funcao");
                 }                
             }
         }
-        else erros.add("Na linha " + ctx.getStart().getLine() + " ID já usado!");
+        else  erros.add("Linha "+ctx.getStart().getLine()+": ID duplicado");
+
         
     }
     
@@ -187,7 +188,7 @@ public class AcoesSemanticas extends GramaticaBaseListener {
         
         TerminalNode id = ctx.ID();
         if(!tabFunc.containsKey(id.getText())){
-            erros.add("Na linha " + ctx.getStart().getLine() + " foi realizada uma chamada para a função " + id.getText()+" que não existe");
+            erros.add("Linha " + ctx.getStart().getLine() + ": Funcao "+id.getText()+" nao encontrada");
         }
         else {
             if(ctx.listaExpre() != null){
@@ -220,7 +221,7 @@ public class AcoesSemanticas extends GramaticaBaseListener {
                     }
                     else{
                         System.out.println(ctx.testeLogic().getText());
-                        erros.add("Tipo Incompativel na linha " + ctx.getStart().getLine() + ". Variavel do tipo: " + tip + "// Tipo Exp: " + x);
+                        erros.add("Linha "+ctx.getStart().getLine()+" :Tipo Incompativel" + ". Variavel do tipo: " + tip + "// Tipo Exp: " + x);
                     }                    
                 }
                 else{
@@ -229,10 +230,10 @@ public class AcoesSemanticas extends GramaticaBaseListener {
                 }
             }
             else{
-                erros.add("Impossivel mudar o valor de uma constante na linha " + ctx.getStart().getLine());
+                erros.add("Linha "+ctx.getStart().getLine()+": Alteracao de constante "+ctx.getText()+" invalida ");
             }
         }
-        else erros.add("Variavel não declarado na linha " + ctx.getStart().getLine());
+        else erros.add("Linha "+ctx.getStart().getLine()+"Variavel "+ctx.getText()+" não declarada");
     }
        
     public int testeLogicoOU(GramaticaParser.TesteLogicContext ctx){
@@ -250,17 +251,17 @@ public class AcoesSemanticas extends GramaticaBaseListener {
             
             if(tp1 == 5){ // Testa se é uma Variavel
                 if(!tabSimb.containsKey(ch.getText())){
-                    erros.add("Na linha " + ctx.getStart().getLine() + " foi usando uma variável não declarada");
+                    erros.add("Linha "+ctx.getStart().getLine()+": Variável "+ch.getText()+" não declarada");
                     tipo = 12;
                 }
                 else{
                     instan = VarInstan.get(ch.getText());
                     if (instan == false){
-                        erros.add("Na linha " + ctx.getStart().getLine() +  " foi usado uma variavel não instanciada.");
+                        erros.add("Linha "+ctx.getStart().getLine()+": Variável "+ch.getText()+" não inicializada");
                     }
                     tp1 = tabSimb.get(ch.getText());
                     if(tp1 != 3){
-                        erros.add("Na linha " + ctx.getStart().getLine() + " foi usado um valor não booleano");
+                        erros.add("Linha "+ctx.getStart().getLine()+": Esperando um booleano");
                         tipo = 12;
                     }
                     else{
@@ -270,17 +271,17 @@ public class AcoesSemanticas extends GramaticaBaseListener {
             }            
             if(tp2 == 5){ // Testa se é uma Variavel
                 if(!tabSimb.containsKey(ch2.getText())){
-                    erros.add("Na linha " + ctx.getStart().getLine() + " foi usando a variável " + ch2.getText()+ "  que não foi declarada.");
+                    erros.add("Linha "+ctx.getStart().getLine()+": Variável "+ch.getText()+" não declarada");
                     tipo = 12;
                 }
                 else{
                     instan = VarInstan.get(ch2.getText());
                     if (instan == false){
-                        erros.add("Na linha " + ctx.getStart().getLine() +  " foi usando a variável " + ch.getText()+ "  que não foi instanciada.");
+                        erros.add("Linha "+ctx.getStart().getLine()+": Variável "+ch.getText()+" não declarada");
                     }
                     tp2 = tabSimb.get(ch2.getText());
                     if(tp2 != 3){
-                        erros.add("Na linha " + ctx.getStart().getLine() + " foi usado um valor não booleano");
+                        erros.add("Linha "+ctx.getStart().getLine()+": Esperando um booleano");
                         tipo = 12;
                     }
                     else{
@@ -289,7 +290,7 @@ public class AcoesSemanticas extends GramaticaBaseListener {
                 }
             }
             if(tp1 !=3 || tp2 != 3){ // Testa se é um valor TRUE ou FALSE
-                erros.add("Na linha " + ctx.getStart().getLine() + " foi usado um valor não booleano");
+                erros.add("Linha "+ctx.getStart().getLine()+": Esperando um booleano");
                 tipo = 12;
             }
             else{
@@ -318,17 +319,17 @@ public class AcoesSemanticas extends GramaticaBaseListener {
             
             if(tp1 == 5){ // Testa se é uma Variavel
                 if(!tabSimb.containsKey(ch.getText())){
-                    erros.add("Na linha " + ctx.getStart().getLine() + " foi usando a variável " + ch.getText()+ "  que não foi declarada.");
+                    erros.add("Linha "+ctx.getStart().getLine()+": Variável "+ch.getText()+" não declarada");
                     tipo = 12;
                 }
                 else{
                     instan = VarInstan.get(ch.getText());
                     if (instan == false){
-                        erros.add("Na linha " + ctx.getStart().getLine() +  " foi usando a variável " + ch.getText()+ "  que não foi instanciada.");
+                        erros.add("Linha "+ctx.getStart().getLine()+": Variável "+ch.getText()+" não inicializada");
                     }
                     tp1 = tabSimb.get(ch.getText());
                     if(tp1 != 3){
-                        erros.add("Na linha " + ctx.getStart().getLine() + " foi usado um valor não booleano.");
+                        erros.add("Linha "+ctx.getStart().getLine()+": Esperando um booleano");
                         tipo = 12;
                     }
                     else{
@@ -338,17 +339,17 @@ public class AcoesSemanticas extends GramaticaBaseListener {
             }            
             if(tp2 == 5){ // Testa se é uma Variavel
                 if(!tabSimb.containsKey(ch2.getText())){
-                    erros.add("Na linha " + ctx.getStart().getLine() + " foi usando a variável " + ch2.getText()+ "  que não foi declarada.");
+                    erros.add("Linha "+ctx.getStart().getLine()+": Variável "+ch2.getText()+" não declarada");
                     tipo = 12;
                 }
                 else{
                     instan = VarInstan.get(ch2.getText());
                     if (instan == false){
-                        erros.add("Na linha " + ctx.getStart().getLine() +  " foi usando a variável " + ch2.getText()+ "  que não foi instanciada.");
+                        erros.add("Linha "+ctx.getStart().getLine()+": Variável "+ch2.getText()+" não declarada");
                     }
                     tp2 = tabSimb.get(ch2.getText());
                     if(tp2 != 3){
-                        erros.add("Na linha " + ctx.getStart().getLine() + " foi usado um valor não booleano");
+                        erros.add("Linha "+ctx.getStart().getLine()+": Esperando um booleano");
                         tipo = 12;
                     }
                     else{
@@ -357,7 +358,7 @@ public class AcoesSemanticas extends GramaticaBaseListener {
                 }
             }
             if(tp1 !=3 || tp2 != 3){ // Testa se é um valor TRUE ou FALSE
-                erros.add("Na linha " + ctx.getStart().getLine() + " foi usado um valor não booleano");
+                erros.add("Linha "+ctx.getStart().getLine()+": Esperando um booleano");
                 tipo = 12;
             }
             else{
@@ -386,12 +387,12 @@ public class AcoesSemanticas extends GramaticaBaseListener {
         
         if(tp1 == 5){
             if(!tabSimb.containsKey(ch.getText())){
-                erros.add("Na linha " + ctx.getStart().getLine() + " foi usando a variável " + ch.getText()+ "  que não foi declarada.");
+                erros.add("Linha "+ctx.getStart().getLine()+": Variável "+ch.getText()+" não declarada");
                 tipo = 12;
             }
             instan = VarInstan.get(ch.getText());
                 if (instan == false){
-                    erros.add("Na linha " + ctx.getStart().getLine() +  " foi usando a variável " + ch.getText()+ "  que não foi instanciada.");
+                    erros.add("Linha "+ctx.getStart().getLine()+": Variável "+ch.getText()+" não inicializada");
                 }
         }
         
@@ -400,12 +401,12 @@ public class AcoesSemanticas extends GramaticaBaseListener {
         tp2 = ch2.t;
         if(tp2 == 5){
             if(!tabSimb.containsKey(ch2.getText())){
-                erros.add("Na linha " + ctx.getStart().getLine() + " foi usando a variável " + ch2.getText()+ "  que não foi declarada.");
+                erros.add("Linha "+ctx.getStart().getLine()+": Variável "+ch2.getText()+" não declarada");
                 tipo = 12;
             }
             instan = VarInstan.get(ch2.getText());
             if (instan == false){
-                erros.add("Na linha " + ctx.getStart().getLine() +  " foi usando a variável " + ch2.getText()+ "  que não foi instanciada.");
+                erros.add("Linha "+ctx.getStart().getLine()+": Variável "+ch2.getText()+" não inicializada");
             }
         }
         
@@ -428,12 +429,12 @@ public class AcoesSemanticas extends GramaticaBaseListener {
         
         if(tp1 == 5){
             if(!tabSimb.containsKey(ch.getText())){
-                erros.add("Na linha " + ctx.getStart().getLine() + " foi usando a variável " + ch.getText()+ "  que não foi declarada.");
+                erros.add("Linha "+ctx.getStart().getLine()+": Variável "+ch.getText()+" não declarada");
                 tipo = 13;
             }
             instan = VarInstan.get(ch.getText());
                     if (instan == false){
-                        erros.add("Na linha " + ctx.getStart().getLine() +  " foi usando a variável " + ch.getText()+ "  que não foi instanciada.");
+                        erros.add("Linha "+ctx.getStart().getLine()+": Variável "+ch.getText()+" não inicializada");
                     }
         }
         
@@ -442,12 +443,12 @@ public class AcoesSemanticas extends GramaticaBaseListener {
         tp2 = ch2.t;
         if(tp2 == 5){
             if(!tabSimb.containsKey(ch2.getText())){
-                erros.add("Na linha " + ctx.getStart().getLine() + " foi usando a variável " + ch2.getText()+ "  que não foi declarada.");
+                erros.add("Linha "+ctx.getStart().getLine()+": Variável "+ch2.getText()+" não declarada");
                 tipo = 13;
             }
             instan = VarInstan.get(ch2.getText());
                     if (instan == false){
-                        erros.add("Na linha " + ctx.getStart().getLine() +  " foi usando a variável " + ch2.getText()+ "  que não foi instanciada.");
+                        erros.add("Linha "+ctx.getStart().getLine()+": Variável "+ch2.getText()+" não inicializada");
                     }
         }
         
@@ -471,17 +472,17 @@ public class AcoesSemanticas extends GramaticaBaseListener {
             
             if(tp1 == 5){ // Testa se é uma Variavel
                 if(!tabSimb.containsKey(ch.getText())){
-                    erros.add("Na linha " + ctx.getStart().getLine() + " foi usando a variável " + ch.getText()+ "  que não foi declarada.");
+                    erros.add("Linha "+ctx.getStart().getLine()+": Variável "+ch.getText()+" não declarada");
                     tipo = 14;
                 }
                 else{
                     instan = VarInstan.get(ch.getText());
                     if (instan == false){
-                        erros.add("Na linha " + ctx.getStart().getLine() +  " foi usando a variável " + ch.getText()+ "  que não foi instanciada.");
+                        erros.add("Linha "+ctx.getStart().getLine()+": Variável "+ch.getText()+" não inicializada");
                     }
                     tp1 = tabSimb.get(ch.getText());
                     if(tp1 == 3 || tp1 == 2){
-                        erros.add("Na linha " + ctx.getStart().getLine() + " foi usado um valor não numerico na expressão");
+                        erros.add("Linha "+ctx.getStart().getLine()+": Esperando valor numerico");
                         tipo = 14;
                     }
                     else{
@@ -491,17 +492,17 @@ public class AcoesSemanticas extends GramaticaBaseListener {
             }            
             if(tp2 == 5){ // Testa se é uma Variavel
                 if(!tabSimb.containsKey(ch2.getText())){
-                    erros.add("Na linha " + ctx.getStart().getLine() + " foi usando a variável " + ch2.getText()+ "  que não foi declarada.");
+                    erros.add("Linha "+ctx.getStart().getLine()+": Variável "+ch2.getText()+" não declarada");
                     tipo = 14;
                 }
                 else{
                     instan = VarInstan.get(ch2.getText());
                     if (instan == false){
-                        erros.add("Na linha " + ctx.getStart().getLine() +  " foi usando a variável " + ch2.getText()+ "  que não foi instanciada.");
+                        erros.add("Linha "+ctx.getStart().getLine()+": Variável "+ch2.getText()+" não inicializada");
                     }
                     tp2 = tabSimb.get(ch2.getText());
                     if(tp2 == 3 || tp2 == 2){
-                        erros.add("Na linha " + ctx.getStart().getLine() + " foi usado um valor não numerico na expressão");
+                        erros.add("Linha "+ctx.getStart().getLine()+": Esperando um valor numerico");
                         tipo = 14;
                     }
                     else{
@@ -515,7 +516,7 @@ public class AcoesSemanticas extends GramaticaBaseListener {
                 }
             }
             else{
-                erros.add("Na linha " + ctx.getStart().getLine() + " foi usado um valor não numerico");
+                erros.add("Linha "+ctx.getStart().getLine()+": Esperando um valor numerico");
                 tipo = 14;
             } 
         }
@@ -541,17 +542,17 @@ public class AcoesSemanticas extends GramaticaBaseListener {
             
             if(tp1 == 5){ // Testa se é uma Variavel
                 if(!tabSimb.containsKey(ch.getText())){
-                    erros.add("Na linha " + ctx.getStart().getLine() + " foi usando a variável " + ch.getText()+ "  que não foi declarada.");
+                    erros.add("Linha "+ctx.getStart().getLine()+": Variável "+ch.getText()+" não declarada");
                     tipo = 15;
                 }
                 else{
                     instan = VarInstan.get(ch.getText());
                     if (instan == false){
-                        erros.add("Na linha " + ctx.getStart().getLine() +  " foi usando a variável " + ch.getText()+ "  que não foi instanciada.");
+                        erros.add("Linha "+ctx.getStart().getLine()+": Variável "+ch.getText()+" não inicializada");
                     }
                     tp1 = tabSimb.get(ch.getText());
                     if(tp1 == 3 || tp1 == 2){
-                        erros.add("Na linha " + ctx.getStart().getLine() + " foi usado um valor não numerico na expressão");
+                        erros.add("Linha "+ctx.getStart().getLine()+": Esperando valor numerico");
                         tipo = 15;
                     }
                     else{
@@ -561,18 +562,18 @@ public class AcoesSemanticas extends GramaticaBaseListener {
             }            
             if(tp2 == 5){ // Testa se é uma Variavel
                 if(!tabSimb.containsKey(ch2.getText())){
-                    erros.add("Na linha " + ctx.getStart().getLine() +" foi usando a variável " + ch2.getText()+ "  que não foi declarada.");
+                    erros.add("Linha "+ctx.getStart().getLine()+": Variável "+ch2.getText()+" não declarada");
                     tipo = 15;
                 }
                 else{
                     //System.out.println(ch.getText());
                     instan = VarInstan.get(ch2.getText());
                     if (instan == false){
-                        erros.add("Na linha " + ctx.getStart().getLine() +  " foi usando a variável " + ch2.getText()+ "  que não foi instanciada.");
+                        erros.add("Linha "+ctx.getStart().getLine()+": Variável "+ch2.getText()+" não inicializada");
                     }
                     tp2 = tabSimb.get(ch2.getText());
                     if(tp2 == 3 || tp2 == 2){
-                        erros.add("Na linha " + ctx.getStart().getLine() + " foi usado um valor não numerico na expressão");
+                        erros.add("Linha "+ctx.getStart().getLine()+": Esperando valor numerico");
                         tipo = 15;
                     }
                     else{
@@ -586,7 +587,7 @@ public class AcoesSemanticas extends GramaticaBaseListener {
                 }
             }
             else{
-                erros.add("Na linha " + ctx.getStart().getLine() + " foi usado um valor não numerico");
+                erros.add("Linha "+ctx.getStart().getLine()+": Esperando valor numerico");
                 tipo = 15;
             } 
         }
@@ -622,10 +623,10 @@ public class AcoesSemanticas extends GramaticaBaseListener {
                                 tipo = tabSimb.get(ctx.ID().getText());
                                 instan = VarInstan.get(ctx.ID().getText());
                                 if (instan == false){
-                                    erros.add("Na linha " + ctx.getStart().getLine() +  " foi usando a variável " + ctx.ID().getText()+ "  que não foi instanciada.");
+                                    erros.add("Linha "+ctx.getStart().getLine()+": Variável "+ctx.ID().getText()+" não inicializada");
                                 }
                             }catch(Exception e){
-                                erros.add("Na linha " + ctx.getStart().getLine() +  " foi usando a variável " + ctx.ID().getText()+ "  que não foi declarada.");
+                                erros.add("Linha "+ctx.getStart().getLine()+": Variável "+ctx.ID().getText()+" não declarada");
                             }
                         }
                         else{
@@ -655,19 +656,19 @@ public class AcoesSemanticas extends GramaticaBaseListener {
         int tipo;
         if(ctx.getText().contains("if")){
             if(testeLogicoOU(ctx.testeLogic()) != 3){
-                erros.add("Na linha " + ctx.getStart().getLine() + " foi usado um valor não booleano no IF");
+                erros.add("Linha "+ctx.getStart().getLine()+": Erro na construcao do IF. Esperando valor booleano");
             }
         }
         else {
             for(TerminalNode id : ctx.varControl().ID()){ // Testa se a variávela de controle é inteira
                 tipo = tabSimb.get(id.getText());
                 if(tipo != 1){
-                    erros.add("Na linha " + ctx.getStart().getLine() + " foi usado uma variável não inteira na variável de controle.");
+                    erros.add("Linha "+ctx.getStart().getLine()+": Erro na construcao do IF. Esperando valor inteiro");
                 }
                 VarInstan.put(id.getText(),true);
             }
             if(testeLogicoOU(ctx.testeLogic()) != 3){
-                erros.add("Na linha " + ctx.getStart().getLine() + " foi usado um valor não booleano no condicional do FOR");
+                erros.add("Linha "+ctx.getStart().getLine()+": Erro na construcao do FOR. Esperando valor booleano");
             }
             
         }
@@ -683,13 +684,13 @@ public class AcoesSemanticas extends GramaticaBaseListener {
                 exp = (GramaticaParser.ExpreContext) it.next();
                 if(exp.ID() != null){
                     if(!tabSimb.containsKey(exp.ID().getText())){
-                        erros.add("Na linha " + ctx.getStart().getLine() + " foi usado na função print() a variavel " + exp.ID().getText() + " que não foi declarada.");
+                        erros.add("Linha "+ctx.getStart().getLine()+": Variavel "+exp.ID().getText()+" nao declarada");
                     }
                 }
                 else if(exp.funcMath() != null){
                     int tipo = funcMath(exp.funcMath());
                     if(tipo != 1 && tipo!=2 && tipo!=3 && tipo != 4){
-                        erros.add("Na linha " + ctx.getStart().getLine() + " foi usado uma expressão invalida na função print().");
+                        erros.add("Linha "+ctx.getStart().getLine()+": Expressao invalida");
                     }
                 }
                 
@@ -701,7 +702,7 @@ public class AcoesSemanticas extends GramaticaBaseListener {
     public void enterRead(GramaticaParser.ReadContext ctx) { 
         for(TerminalNode id: ctx.listaIDs2().ID()){
             if(!tabSimb.containsKey(id.getText())){
-                erros.add("Na linha " + ctx.getStart().getLine() + " foi usado na função read() a variavel " + id.getText() + " que não foi declarada.");
+               erros.add("Linha "+ctx.getStart().getLine()+": Variavel  "+id.getText()+" nao declarada");
             }
             else{
                 VarInstan.put(id.getText(),true);
