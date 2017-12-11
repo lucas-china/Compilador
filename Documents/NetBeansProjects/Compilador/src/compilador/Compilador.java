@@ -62,6 +62,8 @@ public class Compilador {
         System.out.println(listener.tabFunc);
         
         System.out.println(listener.paramFunc);
+        System.out.println("\nVariaveis das Funções");
+        System.out.println(listener.varFunc);
         
         if (listener.erros.isEmpty()){
             return "Compilado com sucesso!";   

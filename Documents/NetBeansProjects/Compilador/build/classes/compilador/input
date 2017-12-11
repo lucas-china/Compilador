@@ -1,20 +1,28 @@
 Class exemplo;
 Int: numero;
-Int fatorial (Int fat){
-if (fat > 1){
-return fat * fatorial(fat - 1);
-} else {
-return 1;
-}
-}
-// comentárioVoid resultado (Int valor){
+Str: mensagem;
 
-mensagem = Resultado;
-print (mensagem, valor);
-return;
+Int fatorial (Int fat){
+  Int: fat;
+fat = 0;
+    if (fat>1){
+        return fat * fatorial(fat-1);
+    } else{
+   return 1;
+    }
+return 0 ;
+  }
+
+Void resultado (Int valor){
+Int: valor;  
+valor = 0;
+   mensagem = "resultado: ";
+   print (mensagem, valor);
+    return;
 }
-Main{
-print (FatorialdeNDigiteonumero”);
-read (numero);
-resultado (fatorial(numero));
+
+Main {
+print ("fatorial de n. digite o numero?");
+read(numero);
+resultado(fatorial(numero));
 }

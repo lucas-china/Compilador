@@ -22,30 +22,35 @@ public class AcoesSemanticas extends GramaticaBaseListener {
     
     private TabSimb Tabela = new TabSimb();
     public Map<String, Integer> tabSimb = Tabela.getTabSimb();
-    private List<String> keywords = new PalavrasReservadas().getKeywords();
+    private PalavrasReservadas keywords = new PalavrasReservadas();
+//    private List<String> keywords = new ArrayList<>();
     public Map<String, String> tabCons = Tabela.getTabConst();
     public Map<String, Integer> tabFunc = Tabela.getTabFunc();
     public List<String> erros = new ArrayList<String>();
     public Map<String, Boolean> VarInstan = new HashMap<String, Boolean>();
     public Map<String, List<Integer>> paramFunc = new HashMap<String, List<Integer>>();
+    public Map<String, List<String>> varFunc = new HashMap<String, List<String>>();
+    public String funcAtual = "Main";
     
-    
+   
     
     @Override
     public void enterDecVars(GramaticaParser.DecVarsContext ctx) {
         
         int flag = 0;
         for (TerminalNode id: ctx.listaIDs().ID()) {
+            System.out.println("Entrou no "+id.getText());
                 if (!tabSimb.containsKey(id.getText())){
-                    for(String palavra : keywords){
-                        if(palavra == id.getText()){
-                            erros.add("Linha "+ctx.getStart().getLine()+": Palavra reservada." );
+                   
+                    for(String palavra : keywords.getKeywords()){
+                        if(palavra.equalsIgnoreCase(id.getText())){
+                            erros.add("Linha "+ctx.getStart().getLine()+": Palavra reservada" );
                             flag = 1;
                         }
                     }                    
                     if(flag == 0){
                         tabSimb.put(id.getText(),ctx.tipo.t);
-                        VarInstan.put(id.getText(), false);
+                        //VarInstan.put(id.getText(), false);
                         
                     }
                     flag = 0;    
@@ -97,19 +102,25 @@ public class AcoesSemanticas extends GramaticaBaseListener {
     public void enterDecFuncs(GramaticaParser.DecFuncsContext ctx) {
         int tipo = 0;
         List<Integer> listaParam = new ArrayList<Integer>();
+        funcAtual = ctx.ID().getText();
         
         TerminalNode id = ctx.ID();
         if(!tabSimb.containsKey(id.getText())){
-            if(ctx.tipoRetorno().tipo() == null){ 
-                if(ctx.retorno() == null){
+            if(ctx.tipoRetorno().tipo() == null){
+                if( ctx.retorno() == null){
+                    // ta certo, void não tem retorno
+                    tabSimb.put(id.getText(), 0); // 0 vai ser o tipo Void
+                    tabFunc.put(id.getText(), 0);
+                }
+                else if(ctx.retorno().expre() == null){
                     // ta certo, void não tem retorno
                     tabSimb.put(id.getText(), 0); // 0 vai ser o tipo Void
                     tabFunc.put(id.getText(), 0);
                     
                 }
                 else {
-                    tabSimb.put(id.getText(), ctx.tipoRetorno().tipo().t); 
-                    tabFunc.put(id.getText(), ctx.tipoRetorno().tipo().t);
+                    tabSimb.put(id.getText(), 0); 
+                    tabFunc.put(id.getText(), 0);
                     erros.add("Linha "+ctx.getStart().getLine()+": Erro de tipo. Retorno invalido");
                 }
             }
@@ -193,8 +204,32 @@ public class AcoesSemanticas extends GramaticaBaseListener {
             }
         }
         else  erros.add("Linha "+ctx.getStart().getLine()+": ID duplicado");
-
-        
+    }
+    
+    @Override
+    public void enterDecVarsFunc(GramaticaParser.DecVarsFuncContext ctx) {
+        int flag = 0;
+        List<String> vars = new ArrayList<String>();
+        for (TerminalNode id: ctx.listaIDs().ID()) {
+            System.out.println("Entrou no "+id.getText());
+                if (!varFunc.containsKey(id.getText())){
+                   
+                    for(String palavra : keywords.getKeywords()){
+                        if(palavra.equalsIgnoreCase(id.getText())){
+                            erros.add("Linha "+ctx.getStart().getLine()+": Palavra reservada" );
+                            flag = 1;
+                        }
+                    }                    
+                    if(flag == 0){
+                        tabSimb.put(id.getText(),ctx.tipo.t);
+                        //VarInstan.put(id.getText(), false);
+                         vars.add(id.getText());                      
+                    }
+                    flag = 0;    
+                } 
+                else erros.add("Linha "+ctx.getStart().getLine()+": ID duplicado." );
+            }
+        varFunc.put(funcAtual,vars);
     }
     
     @Override 
@@ -277,6 +312,7 @@ public class AcoesSemanticas extends GramaticaBaseListener {
         // verificar o escopo; DIFICIL;
         // verifico o tipo, sintetizado da expressão;
         // gerar o código;
+        
         int x;
         TerminalNode id = ctx.ID();
         if(tabSimb.containsKey(id.getText())){
@@ -286,11 +322,11 @@ public class AcoesSemanticas extends GramaticaBaseListener {
                     x = testeLogicoOU(ctx.testeLogic());
                     if(tip == 4 && (x == 1 || x == 4)){
                         System.out.println("Tipo da expressão compativel");
-                        VarInstan.put(id.getText(),true);
+                        //VarInstan.put(id.getText(),true);
                     }
                     else if(tip == x){ 
                         System.out.println("Tipo da expressão compativel");
-                        VarInstan.put(id.getText(),true);
+                        //VarInstan.put(id.getText(),true);
                     }
                     else{
                         System.out.println(ctx.testeLogic().getText());
@@ -310,6 +346,7 @@ public class AcoesSemanticas extends GramaticaBaseListener {
     }
        
     public int testeLogicoOU(GramaticaParser.TesteLogicContext ctx){
+        
         int tipo=10,tp1,tp2;
         boolean instan;
         
@@ -340,10 +377,10 @@ public class AcoesSemanticas extends GramaticaBaseListener {
                     tipo = 12;
                 }
                 else{
-                    instan = VarInstan.get(ch.getText());
+                    /*instan = VarInstan.get(ch.getText());
                     if (instan == false){
                         erros.add("Linha "+ctx.getStart().getLine()+": Variável "+ch.getText()+" não inicializada");
-                    }
+                    }*/
                     tp1 = tabSimb.get(ch.getText());
                     if(tp1 != 3){
                         erros.add("Linha "+ctx.getStart().getLine()+": Esperando um booleano");
@@ -360,10 +397,10 @@ public class AcoesSemanticas extends GramaticaBaseListener {
                     tipo = 12;
                 }
                 else{
-                    instan = VarInstan.get(ch2.getText());
+                    /*instan = VarInstan.get(ch2.getText());
                     if (instan == false){
                         erros.add("Linha "+ctx.getStart().getLine()+": Variável "+ch.getText()+" não declarada");
-                    }
+                    }*/
                     tp2 = tabSimb.get(ch2.getText());
                     if(tp2 != 3){
                         erros.add("Linha "+ctx.getStart().getLine()+": Esperando um booleano");
@@ -419,10 +456,10 @@ public class AcoesSemanticas extends GramaticaBaseListener {
                     tipo = 12;
                 }
                 else{
-                    instan = VarInstan.get(ch.getText());
+                    /*instan = VarInstan.get(ch.getText());
                     if (instan == false){
                         erros.add("Linha "+ctx.getStart().getLine()+": Variável "+ch.getText()+" não inicializada");
-                    }
+                    }*/
                     tp1 = tabSimb.get(ch.getText());
                     if(tp1 != 3){
                         erros.add("Linha "+ctx.getStart().getLine()+": Esperando um booleano");
@@ -439,10 +476,10 @@ public class AcoesSemanticas extends GramaticaBaseListener {
                     tipo = 12;
                 }
                 else{
-                    instan = VarInstan.get(ch2.getText());
+                    /*instan = VarInstan.get(ch2.getText());
                     if (instan == false){
                         erros.add("Linha "+ctx.getStart().getLine()+": Variável "+ch2.getText()+" não declarada");
-                    }
+                    }*/
                     tp2 = tabSimb.get(ch2.getText());
                     if(tp2 != 3){
                         erros.add("Linha "+ctx.getStart().getLine()+": Esperando um booleano");
@@ -501,10 +538,10 @@ public class AcoesSemanticas extends GramaticaBaseListener {
                 erros.add("Linha "+ctx.getStart().getLine()+": Variável "+ch.getText()+" não declarada");
                 tipo = 12;
             }
-            instan = VarInstan.get(ch.getText());
+            /*instan = VarInstan.get(ch.getText());
                 if (instan == false){
                     erros.add("Linha "+ctx.getStart().getLine()+": Variável "+ch.getText()+" não inicializada");
-                }
+                }*/
         }
         
         
@@ -513,10 +550,10 @@ public class AcoesSemanticas extends GramaticaBaseListener {
                 erros.add("Linha "+ctx.getStart().getLine()+": Variável "+ch2.getText()+" não declarada");
                 tipo = 12;
             }
-            instan = VarInstan.get(ch2.getText());
+            /*instan = VarInstan.get(ch2.getText());
             if (instan == false){
                 erros.add("Linha "+ctx.getStart().getLine()+": Variável "+ch2.getText()+" não inicializada");
-            }
+            }*/
         }
         
         
@@ -557,10 +594,10 @@ public class AcoesSemanticas extends GramaticaBaseListener {
                 erros.add("Linha "+ctx.getStart().getLine()+": Variável "+ch2.getText()+" não declarada");
                 tipo = 13;
             }
-            instan = VarInstan.get(ch2.getText());
+            /*instan = VarInstan.get(ch2.getText());
                     if (instan == false){
                         erros.add("Linha "+ctx.getStart().getLine()+": Variável "+ch2.getText()+" não inicializada");
-                    }
+                    }*/
         }
         
         
@@ -577,8 +614,7 @@ public class AcoesSemanticas extends GramaticaBaseListener {
             ParseTree child = ctx.getChild(0);
             
             GramaticaParser.FuncMathContext ch = (GramaticaParser.FuncMathContext)child;
-            tp1 = ch.t;
-
+            
             if(ch.getText().contains("*") || ch.getText().contains("/") || ch.getText().contains("+") || ch.getText().contains("-") ){
                 System.out.println("f1.1: " + ch.getText());
                 tp1 = funcMath(ctx.funcMath());
@@ -601,10 +637,10 @@ public class AcoesSemanticas extends GramaticaBaseListener {
                     tipo = 14;
                 }
                 else{
-                    instan = VarInstan.get(ch.getText());
+                   /* instan = VarInstan.get(ch.getText());
                     if (instan == false){
                         erros.add("Linha "+ctx.getStart().getLine()+": Variável "+ch.getText()+" não inicializada");
-                    }
+                    }*/
                     tp1 = tabSimb.get(ch.getText());
                     if(tp1 == 3 || tp1 == 2){
                         erros.add("Linha "+ctx.getStart().getLine()+": Esperando valor numerico");
@@ -624,10 +660,10 @@ public class AcoesSemanticas extends GramaticaBaseListener {
                     tipo = 14;
                 }
                 else{
-                    instan = VarInstan.get(ch2.getText());
+                    /*instan = VarInstan.get(ch2.getText());
                     if (instan == false){
                         erros.add("Linha "+ctx.getStart().getLine()+": Variável "+ch2.getText()+" não inicializada");
-                    }
+                    }*/
                     tp2 = tabSimb.get(ch2.getText());
                     if(tp2 == 3 || tp2 == 2){
                         erros.add("Linha "+ctx.getStart().getLine()+": Esperando um valor numerico");
@@ -688,10 +724,10 @@ public class AcoesSemanticas extends GramaticaBaseListener {
                     tipo = 15;
                 }
                 else{
-                    instan = VarInstan.get(ch.getText());
+                    /*instan = VarInstan.get(ch.getText());
                     if (instan == false){
                         erros.add("Linha "+ctx.getStart().getLine()+": Variável "+ch.getText()+" não inicializada");
-                    }
+                    }*/
                     tp1 = tabSimb.get(ch.getText());
                     if(tp1 == 3 || tp1 == 2){
                         erros.add("Linha "+ctx.getStart().getLine()+": Esperando valor numerico");
@@ -709,10 +745,10 @@ public class AcoesSemanticas extends GramaticaBaseListener {
                 }
                 else{
                     //System.out.println(ch.getText());
-                    instan = VarInstan.get(ch2.getText());
+                    /*instan = VarInstan.get(ch2.getText());
                     if (instan == false){
                         erros.add("Linha "+ctx.getStart().getLine()+": Variável "+ch2.getText()+" não inicializada");
-                    }
+                    }*/
                     tp2 = tabSimb.get(ch2.getText());
                     if(tp2 == 3 || tp2 == 2){
                         erros.add("Linha "+ctx.getStart().getLine()+": Esperando valor numerico");
@@ -763,10 +799,10 @@ public class AcoesSemanticas extends GramaticaBaseListener {
                         if(ctx.ID() != null){
                             try{
                                 tipo = tabSimb.get(ctx.ID().getText());
-                                instan = VarInstan.get(ctx.ID().getText());
+                                /*instan = VarInstan.get(ctx.ID().getText());
                                 if (instan == false){
                                     erros.add("Linha "+ctx.getStart().getLine()+": Variável "+ctx.ID().getText()+" não inicializada");
-                                }
+                                }*/
                             }catch(Exception e){
                                 erros.add("Linha "+ctx.getStart().getLine()+": Variável "+ctx.ID().getText()+" não declarada");
                             }
@@ -808,7 +844,7 @@ public class AcoesSemanticas extends GramaticaBaseListener {
                 if(tipo != 1){
                     erros.add("Linha "+ctx.getStart().getLine()+": Erro na construcao do FOR. Esperando valor inteiro");
                 }
-                VarInstan.put(id.getText(),true);
+                //VarInstan.put(id.getText(),true);
             }
             if(testeLogicoOU(ctx.testeLogic()) != 3){
                 erros.add("Linha "+ctx.getStart().getLine()+": Erro na construcao do FOR. Esperando valor booleano");
@@ -848,7 +884,7 @@ public class AcoesSemanticas extends GramaticaBaseListener {
                erros.add("Linha "+ctx.getStart().getLine()+": Variavel  "+id.getText()+" nao declarada");
             }
             else{
-                VarInstan.put(id.getText(),true);
+                //VarInstan.put(id.getText(),true);
             }
         }
     }
