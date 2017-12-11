@@ -229,36 +229,35 @@ public class AcoesSemanticas extends GramaticaBaseListener {
                     else if(exp.valor() != null){
                         if(exp.valor().INT() != null){
                             tip = listaParam.get(i);
-                            if(tip != 1){ // Arrumar !! 
-                                try{
-                                    erros.add("Linha: " + ctx.getStart().getLine() + " variável de um tipo diferente da esperada na chamada da função " + exp.ID().getText() + " no parametro " + (i+1));
-                                }catch(Exception e){}                                
+                            if(tip != 1){ // Arrumar !!                               
+                                erros.add("Linha: " + ctx.getStart().getLine() + " variável de um tipo diferente da esperada na chamada da função "+ ctx.ID().getText() + " no parametro " + (i+1));        
                             }
                         }
                         else if(exp.valor().STRING() != null){
                             tip = listaParam.get(i);
                             if(tip != 2){
-                               erros.add("Linha: " + ctx.getStart().getLine() + " variável de um tipo diferente da esperada na chamada da função " + exp.ID().getText() + " no parametro " + (i+1)); 
+                               erros.add("Linha: " + ctx.getStart().getLine() + " variável de um tipo diferente da esperada na chamada da função " + ctx.ID().getText() + " no parametro " + (i+1)); 
                             }                        
                         }
                         else if(exp.valor().TRUE() != null || exp.valor().FALSE() != null){
                             tip = listaParam.get(i);
                             if(tip != 3){
-                               erros.add("Linha: " + ctx.getStart().getLine() + " variável de um tipo diferente da esperada na chamada da função " + exp.ID().getText() + " no parametro " + (i+1)); 
+                               erros.add("Linha: " + ctx.getStart().getLine() + " variável de um tipo diferente da esperada na chamada da função " + ctx.ID().getText() + " no parametro " + (i+1)); 
                             }                        
                         }
                         else if(exp.valor().REAL() != null){
                             tip = listaParam.get(i);
                             if(tip != 4){
-                               erros.add("Linha: " + ctx.getStart().getLine() + " variável de um tipo diferente da esperada na chamada da função " + exp.ID().getText() + " no parametro " + (i+1)); 
+                               erros.add("Linha: " + ctx.getStart().getLine() + " variável de um tipo diferente da esperada na chamada da função " + ctx.ID().getText() + " no parametro " + (i+1)); 
                             }                        
                         }
                     }
                     else if(exp.testeLogic() != null){
+                        System.out.println("256:  " + exp.testeLogic().getText());
                         tip = testeLogicoOU(exp.testeLogic());
                         tipo = listaParam.get(i);
                         if(tip != tipo){
-                            erros.add("Linha: " + ctx.getStart().getLine() + " variável de um tipo diferente da esperada na chamada da função " + exp.ID().getText() + " no parametro " + (i+1)); 
+                            erros.add("Linha: " + ctx.getStart().getLine() + " variável de um tipo diferente da esperada na chamada da função " + ctx.ID().getText() + " no parametro " + (i+1)); 
                         }
                     }
                     i++;
@@ -285,7 +284,11 @@ public class AcoesSemanticas extends GramaticaBaseListener {
                 if(ctx.getChild(2) != null){
                     int tip = tabSimb.get(id.getText());
                     x = testeLogicoOU(ctx.testeLogic());
-                    if(tip == x){ 
+                    if(tip == 4 && (x == 1 || x == 4)){
+                        System.out.println("Tipo da expressão compativel");
+                        VarInstan.put(id.getText(),true);
+                    }
+                    else if(tip == x){ 
                         System.out.println("Tipo da expressão compativel");
                         VarInstan.put(id.getText(),true);
                     }
@@ -309,15 +312,27 @@ public class AcoesSemanticas extends GramaticaBaseListener {
     public int testeLogicoOU(GramaticaParser.TesteLogicContext ctx){
         int tipo=10,tp1,tp2;
         boolean instan;
-        if(ctx.getText().contains("||")){
-            
+        
+        if(ctx.testeLogic()!=null){            
+                        
             ParseTree child = ctx.getChild(0);
-            GramaticaParser.TesteLogicContext ch = (GramaticaParser.TesteLogicContext)child;
-            tp1 = ch.t;
+            GramaticaParser.TesteLogicContext ch = (GramaticaParser.TesteLogicContext)child;           
             
+            if(ch.getText().contains("||") || ch.getText().contains("&&") || ch.getText().contains(">=") || ch.getText().contains(">") || ch.getText().contains("<") || ch.getText().contains("<=") || ch.getText().contains("==") || ch.getText().contains("!=") || ch.getText().contains("*") || ch.getText().contains("/") || ch.getText().contains("+") || ch.getText().contains("-")){
+                System.out.println("f1: " + ch.getText());
+                tp1 = testeLogicoOU(ctx.testeLogic());
+            }
+            else            
+                tp1 = ch.t;                    
+                       
             child = ctx.getChild(2);
             GramaticaParser.Teste1Context ch2 = (GramaticaParser.Teste1Context)child;
-            tp2 = ch2.t;
+            if(ch2.getText().contains("||") || ch2.getText().contains("&&") || ch2.getText().contains(">=") || ch2.getText().contains(">") || ch2.getText().contains("<") || ch2.getText().contains("<=") || ch2.getText().contains("==") || ch2.getText().contains("!=") || ch2.getText().contains("*") || ch2.getText().contains("/") || ch2.getText().contains("+") || ch2.getText().contains("-")){
+                System.out.println("f2: " +ch2.getText());
+                tp2 = testeLogicoE(ctx.teste1());
+            } 
+            else
+                tp2 = ch2.t;
             
             if(tp1 == 5){ // Testa se é uma Variavel
                 if(!tabSimb.containsKey(ch.getText())){
@@ -359,13 +374,13 @@ public class AcoesSemanticas extends GramaticaBaseListener {
                     }
                 }
             }
-            if(tp1 !=3 || tp2 != 3){ // Testa se é um valor TRUE ou FALSE
-                erros.add("Linha "+ctx.getStart().getLine()+": Esperando um booleano");
-                tipo = 12;
-            }
-            else{
+            if(tp1 == 3 && tp2 == 3){ // Testa se é um valor TRUE ou FALSE
                 tipo = 3;
-            }              
+            }
+            else if(tp1 == 1 || tp1 == 2 || tp1 == 4|| tp2 == 1 || tp2 == 2 || tp2 == 4){               
+                erros.add("Linha "+ctx.getStart().getLine()+": Esperando um booleano");
+                tipo = 12;              
+            }            
         }
         else{
             tipo = testeLogicoE(ctx.teste1());
@@ -378,14 +393,25 @@ public class AcoesSemanticas extends GramaticaBaseListener {
         int tipo = 11,tp1,tp2;
         boolean instan;
         
-        if(ctx.getText().contains("&&")){
+        if(ctx.teste1() != null){
             ParseTree child = ctx.getChild(0);
-            GramaticaParser.Teste1Context ch = (GramaticaParser.Teste1Context)child;
-            tp1 = ch.t;
+            GramaticaParser.Teste1Context ch = (GramaticaParser.Teste1Context)child;           
             
+            if(ch.getText().contains("&&") || ch.getText().contains(">=") || ch.getText().contains(">") || ch.getText().contains("<") || ch.getText().contains("<=") || ch.getText().contains("==") || ch.getText().contains("!=") || ch.getText().contains("*") || ch.getText().contains("/") || ch.getText().contains("+") || ch.getText().contains("-") ){
+                System.out.println("f1.1: " + ch.getText());
+                tp1 = testeLogicoE(ctx.teste1());
+            }
+            else            
+                tp1 = ch.t;                    
+                       
             child = ctx.getChild(2);
             GramaticaParser.Teste2Context ch2 = (GramaticaParser.Teste2Context)child;
-            tp2 = ch2.t;
+            if(ch2.getText().contains(">=") || ch2.getText().contains(">") || ch2.getText().contains("<") || ch2.getText().contains("<=") || ch2.getText().contains("==") || ch2.getText().contains("!=") || ch2.getText().contains("*") || ch2.getText().contains("/") || ch2.getText().contains("+") || ch2.getText().contains("-")){
+                System.out.println("f2.2: " +ch2.getText());
+                tp2 = teste2(ctx.teste2());
+            } 
+            else
+                tp2 = ch2.t;
             
             if(tp1 == 5){ // Testa se é uma Variavel
                 if(!tabSimb.containsKey(ch.getText())){
@@ -450,10 +476,25 @@ public class AcoesSemanticas extends GramaticaBaseListener {
             tipo = teste3(ctx.teste3());
             return tipo;
         }
-        
+       
         ParseTree child = ctx.getChild(0);
-        GramaticaParser.Teste2Context ch = (GramaticaParser.Teste2Context)child;
-        tp1 = ch.t;
+        GramaticaParser.Teste2Context ch = (GramaticaParser.Teste2Context)child;      
+
+        if(ch.getText().contains(">=") || ch.getText().contains(">") || ch.getText().contains("<") || ch.getText().contains("<=") || ch.getText().contains("==") || ch.getText().contains("!=") || ch.getText().contains("*") || ch.getText().contains("/") || ch.getText().contains("+") || ch.getText().contains("-") ){
+            System.out.println("f1.1: " + ch.getText());
+            tp1 = teste2(ctx.teste2());
+        }
+        else            
+            tp1 = ch.t;                    
+                       
+        child = ctx.getChild(2);
+        GramaticaParser.Teste3Context ch2 = (GramaticaParser.Teste3Context)child;
+        if(ch2.getText().contains("==") || ch2.getText().contains("!=") || ch2.getText().contains("*") || ch2.getText().contains("/") || ch2.getText().contains("+") || ch2.getText().contains("-")){
+            System.out.println("f2.2: " +ch2.getText());
+            tp2 = teste3(ctx.teste3());
+        } 
+        else
+            tp2 = ch2.t;        
         
         if(tp1 == 5){
             if(!tabSimb.containsKey(ch.getText())){
@@ -466,9 +507,7 @@ public class AcoesSemanticas extends GramaticaBaseListener {
                 }
         }
         
-        child = ctx.getChild(2);
-        GramaticaParser.Teste3Context ch2 = (GramaticaParser.Teste3Context)child;
-        tp2 = ch2.t;
+        
         if(tp2 == 5){
             if(!tabSimb.containsKey(ch2.getText())){
                 erros.add("Linha "+ctx.getStart().getLine()+": Variável "+ch2.getText()+" não declarada");
@@ -497,20 +536,22 @@ public class AcoesSemanticas extends GramaticaBaseListener {
         GramaticaParser.Teste3Context ch = (GramaticaParser.Teste3Context)child;
         tp1 = ch.t;
         
-        if(tp1 == 5){
-            if(!tabSimb.containsKey(ch.getText())){
-                erros.add("Linha "+ctx.getStart().getLine()+": Variável "+ch.getText()+" não declarada");
-                tipo = 13;
-            }
-            instan = VarInstan.get(ch.getText());
-                    if (instan == false){
-                        erros.add("Linha "+ctx.getStart().getLine()+": Variável "+ch.getText()+" não inicializada");
-                    }
+        if(ch.getText().contains("==") || ch.getText().contains("!=") || ch.getText().contains("*") || ch.getText().contains("/") || ch.getText().contains("+") || ch.getText().contains("-") ){
+            System.out.println("f1.1: " + ch.getText());
+            tp1 = teste3(ctx.teste3());
         }
-        
+        else            
+            tp1 = ch.t;                    
+                       
         child = ctx.getChild(2);
         GramaticaParser.FuncMathContext ch2 = (GramaticaParser.FuncMathContext)child;
-        tp2 = ch2.t;
+        if(ch2.getText().contains("*") || ch2.getText().contains("/") || ch2.getText().contains("+") || ch2.getText().contains("-")){
+            System.out.println("f2.2: " +ch2.getText());
+            tp2 = funcMath(ctx.funcMath());
+        } 
+        else
+            tp2 = ch2.t;
+        
         if(tp2 == 5){
             if(!tabSimb.containsKey(ch2.getText())){
                 erros.add("Linha "+ctx.getStart().getLine()+": Variável "+ch2.getText()+" não declarada");
@@ -530,14 +571,28 @@ public class AcoesSemanticas extends GramaticaBaseListener {
         int tipo=14,tp1,tp2;
         boolean instan;
         
+        
+        
         if(ctx.getText().contains("+") || ctx.getText().contains("-")){
             ParseTree child = ctx.getChild(0);
-             
+            
             GramaticaParser.FuncMathContext ch = (GramaticaParser.FuncMathContext)child;
             tp1 = ch.t;
-            
+
+            if(ch.getText().contains("*") || ch.getText().contains("/") || ch.getText().contains("+") || ch.getText().contains("-") ){
+                System.out.println("f1.1: " + ch.getText());
+                tp1 = funcMath(ctx.funcMath());
+            }
+            else            
+                tp1 = ch.t;                    
+
             child = ctx.getChild(2);
             GramaticaParser.TermContext ch2 = (GramaticaParser.TermContext)child;
+            if(ch2.getText().contains("+") || ch2.getText().contains("-")){
+                System.out.println("f2.2: " +ch2.getText());
+                tp2 = term(ctx.term());
+            } 
+            else
             tp2 = ch2.t;
             
             if(tp1 == 5){ // Testa se é uma Variavel
@@ -554,6 +609,9 @@ public class AcoesSemanticas extends GramaticaBaseListener {
                     if(tp1 == 3 || tp1 == 2){
                         erros.add("Linha "+ctx.getStart().getLine()+": Esperando valor numerico");
                         tipo = 14;
+                    }
+                    else if(tp1 == 4){
+                        tipo = 4;
                     }
                     else{
                         tipo = 1;
@@ -575,15 +633,22 @@ public class AcoesSemanticas extends GramaticaBaseListener {
                         erros.add("Linha "+ctx.getStart().getLine()+": Esperando um valor numerico");
                         tipo = 14;
                     }
+                    else if(tp1 == 4){
+                        tipo = 4;
+                    }
                     else{
                         tipo = 1;
                     }
                 }
             }
-            if((tp1==1) || (tp1==4)){ // Testa se é um valor INT ou FLOAT
-                if((tp2==1) || (tp2==4)){
-                    tipo = 1;
-                }
+            if((tp1==1) && tp2 ==1 ){ // Testa se é um valor INT ou FLOAT
+                tipo = 1;
+            }
+            else if(tp1==4 && tp2 == 4){
+                tipo = 4;
+            }
+            else if((tp1==1 && tp2==4) || (tp1==2 && tp2==1)){
+                tipo = 4;
             }
             else{
                 erros.add("Linha "+ctx.getStart().getLine()+": Esperando um valor numerico");
@@ -605,9 +670,16 @@ public class AcoesSemanticas extends GramaticaBaseListener {
             ParseTree child = ctx.getChild(0);
             GramaticaParser.TermContext ch = (GramaticaParser.TermContext)child;
             tp1 = ch.t;
-            
+
+            if(ch.getText().contains("+") || ch.getText().contains("-") ){
+                System.out.println("f1.1: " + ch.getText());
+                tp1 = term(ctx.term());
+            }
+            else            
+                tp1 = ch.t;                    
+
             child = ctx.getChild(2);
-            GramaticaParser.FatorContext ch2 = (GramaticaParser.FatorContext)child;
+            GramaticaParser.FatorContext ch2 = (GramaticaParser.FatorContext)child;          
             tp2 = ch2.t;
             
             if(tp1 == 5){ // Testa se é uma Variavel
@@ -725,6 +797,7 @@ public class AcoesSemanticas extends GramaticaBaseListener {
     public void enterControle(GramaticaParser.ControleContext ctx) {
         int tipo;
         if(ctx.getText().contains("if")){
+           
             if(testeLogicoOU(ctx.testeLogic()) != 3){
                 erros.add("Linha "+ctx.getStart().getLine()+": Erro na construcao do IF. Esperando valor booleano");
             }
@@ -733,7 +806,7 @@ public class AcoesSemanticas extends GramaticaBaseListener {
             for(TerminalNode id : ctx.varControl().ID()){ // Testa se a variávela de controle é inteira
                 tipo = tabSimb.get(id.getText());
                 if(tipo != 1){
-                    erros.add("Linha "+ctx.getStart().getLine()+": Erro na construcao do IF. Esperando valor inteiro");
+                    erros.add("Linha "+ctx.getStart().getLine()+": Erro na construcao do FOR. Esperando valor inteiro");
                 }
                 VarInstan.put(id.getText(),true);
             }

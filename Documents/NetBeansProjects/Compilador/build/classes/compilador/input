@@ -1,31 +1,20 @@
 Class exemplo;
-
-Float: num;
-Int: x,y,h;
-Str: msg;
-Bool: k,f;
-final Int z = 10;
-
-Float teste(Float n, Int x, Bool k){
-    print(true + 9);
-    return num;
+Int: numero;
+Int fatorial (Int fat){
+if (fat > 1){
+return fat * fatorial(fat - 1);
+} else {
+return 1;
 }
+}
+// comentárioVoid resultado (Int valor){
 
+mensagem = Resultado;
+print (mensagem, valor);
+return;
+}
 Main{
-    
-    x = 90;
-
-    
-
-    for(x=0,y=0;x<10;x++){} 
-    
-    if(x>y){}
-    
-    num = teste(num,x,k);
-    read(j);
-    print(x);
-    
-   
-    
-    
+print (FatorialdeNDigiteonumero”);
+read (numero);
+resultado (fatorial(numero));
 }
