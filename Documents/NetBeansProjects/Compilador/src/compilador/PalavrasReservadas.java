@@ -14,9 +14,9 @@ import java.util.List;
  */
 public class PalavrasReservadas {
     
-    public List<String> keywords = new ArrayList<String>();
+    public ArrayList<String> keywords = new ArrayList<String>();
     
-    public PalavrasReservadas(){
+    PalavrasReservadas(){
         keywords.add("Main");
         keywords.add("Class");
         keywords.add("if");
@@ -43,8 +43,12 @@ public class PalavrasReservadas {
         
     }
     
-    public List<String> getKeywords(){
+    public ArrayList<String> getKeywords(){
         return keywords;
+    }
+
+    public void setKeywords(ArrayList<String> keywords) {
+        this.keywords = keywords;
     }
     
 }

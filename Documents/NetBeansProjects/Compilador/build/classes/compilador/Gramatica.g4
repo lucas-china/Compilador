@@ -8,8 +8,7 @@ grammar Gramatica;
 }
 
 @parser::members{
-//   Map <String,Integer> tabSimb = new HashMap<String,Integer>();   
-  
+//   Map <String,Integer> tabSimb = new HashMap<String,Integer>();     
 }
 
 

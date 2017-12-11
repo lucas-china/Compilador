@@ -22,22 +22,25 @@ public class AcoesSemanticas extends GramaticaBaseListener {
     
     private TabSimb Tabela = new TabSimb();
     public Map<String, Integer> tabSimb = Tabela.getTabSimb();
-    private List<String> keywords = new PalavrasReservadas().getKeywords();
+    private PalavrasReservadas keywords = new PalavrasReservadas();
+//    private List<String> keywords = new ArrayList<>();
     public Map<String, String> tabCons = Tabela.getTabConst();
     public Map<String, Integer> tabFunc = Tabela.getTabFunc();
     public List<String> erros = new ArrayList<String>();
     public Map<String, Boolean> VarInstan = new HashMap<String, Boolean>();
     
-    
+   
     
     @Override
     public void enterDecVars(GramaticaParser.DecVarsContext ctx) {
         
         int flag = 0;
         for (TerminalNode id: ctx.listaIDs().ID()) {
+            System.out.println("Entrou no "+id.getText());
                 if (!tabSimb.containsKey(id.getText())){
-                    for(String palavra : keywords){
-                        if(palavra == id.getText()){
+                    
+                    for(String palavra : keywords.getKeywords()){
+                        if(palavra.equalsIgnoreCase(id.getText())){
                             erros.add("Linha "+ctx.getStart().getLine()+": Palavra reservada" );
                             flag = 1;
                         }
@@ -94,6 +97,7 @@ public class AcoesSemanticas extends GramaticaBaseListener {
     
     @Override 
     public void enterDecFuncs(GramaticaParser.DecFuncsContext ctx) {
+       
         int tipo;
         
         TerminalNode id = ctx.ID();
@@ -208,6 +212,7 @@ public class AcoesSemanticas extends GramaticaBaseListener {
         // verificar o escopo; DIFICIL;
         // verifico o tipo, sintetizado da expressão;
         // gerar o código;
+        
         int x;
         TerminalNode id = ctx.ID();
         if(tabSimb.containsKey(id.getText())){
@@ -237,6 +242,7 @@ public class AcoesSemanticas extends GramaticaBaseListener {
     }
        
     public int testeLogicoOU(GramaticaParser.TesteLogicContext ctx){
+        
         int tipo=10,tp1,tp2;
         boolean instan;
         if(ctx.getText().contains("||")){
